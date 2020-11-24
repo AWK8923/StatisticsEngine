@@ -2,6 +2,5 @@
 __pycache__/*
 *.code-workspace
 .vscode/*
-.flake8
 *.png
 statisticsengine/data/*.txt
