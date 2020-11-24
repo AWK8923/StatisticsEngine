@@ -1,9 +1,14 @@
+from decimal import *
+
+
 def read(filename):
     data = []
 
     f = open(filename)
     for i in f:
-        data.append(float(i))
+        data.append(Decimal(i))
+
+    data.sort()
     return data
 
 

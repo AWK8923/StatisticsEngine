@@ -1,5 +1,38 @@
+import math
+import numpy as np
+import pandas
+import ReadFile as rf
+import seaborn
+from decimal import *
+from matplotlib import pyplot
+
+
+
 def bcalc(n, sumx, sumy, m):
     return (sumy - (m * sumx)) / n
+
+
+def createboxplot(data):
+    seaborn.boxplot(x=data, width=.25)
+    pyplot.show()
+
+
+def createlineplot(x, y, xlabel, ylabel, title):
+    for i in range(len(x)):
+        x[i] = float(x[i])
+        y[i] = float(y[i])
+
+    xdata = np.array(x)
+    ydata = np.array(y)
+    frame = pandas.DataFrame({xlabel: xdata, ylabel: ydata})
+
+    pyplot.figure(figsize=(16, 9))
+    pyplot.title(title)
+
+    seaborn.regplot(x=xlabel,
+                    y=ylabel,
+                    data=frame).get_figure().savefig(title)
+    pyplot.show()
 
 
 def firstquartile(data):
@@ -29,11 +62,11 @@ def linearregression(x, y):
         sumx2 += pow(x[i], 2)
         sumy2 += pow(y[i], 2)
 
-    m = mcalc(n, sumx, sumy, sumxy, sumx2)
-    b = bcalc(n, sumx, sumy, m)
-    r = rcalc(n, sumx, sumy, sumxy, sumx2, sumy2)
+    m = Decimal(mcalc(n, sumx, sumy, sumxy, sumx2))
+    b = Decimal(bcalc(n, sumx, sumy, m))
+    r = Decimal(rcalcxy(x, y))
 
-    print("Equation: %fx + %f\nr= %f\nr^2 = %f" % (m, b, r, pow(r, 2)))
+    print("\nEquation: %sx + %s\nr= %s\nr^2 = %s" % (m, b, r, pow(r, 2)))
 
 
 def mcalc(n, sumx, sumy, sumxy, sumx2):
@@ -45,12 +78,11 @@ def mean(data):
 
 
 def median(data):
-    length = len(data)
-    if length % 2 != 0:
-        return data[int(round(length / 2))]
+    if len(data) % 2 != 0:
+        return data[int(round(len(data) / 2))]
     else:
-        n1 = data[int((length / 2) - 1)]
-        n2 = data[int(length / 2)]
+        n1 = data[int((len(data) / 2) - 1)]
+        n2 = data[int(len(data) / 2)]
         return n1 + ((n2 - n1) / 2)
 
 
@@ -82,7 +114,42 @@ def populationvariance(data):
 
 
 def rcalc(n, sumx, sumy, sumxy, sumx2, sumy2):
-    return ((n * sumxy) - (sumx * sumy)) / (pow((n * sumx2) - (pow(sumx, 2)), .5) * pow((n * sumy2) - (pow(sumy, 2)), .5))
+    return ((n * sumxy) - (sumx * sumy)) / (Decimal((math.sqrt((n * sumx2) - (sumx ** 2))) * (math.sqrt((n * sumy2) - (sumy ** 2)))))
+
+
+def rcalcxy(x, y):
+    n = len(x)
+    sumx = Decimal(sum(x))
+    sumy = Decimal(sum(y))
+    sumxy = 0
+    sumx2 = 0
+    sumy2 = 0
+
+    for i in range(len(x)):
+        sumxy += x[i] * y[i]
+        sumx2 += pow(x[i], 2)
+        sumy2 += pow(y[i], 2)
+
+    return rcalc(n, sumx, sumy, sumxy, sumx2, sumy2)
+
+
+def reexpress(x, y, xlabel, ylabel, title):
+    reexpressed = {}
+    f = open("Re-expressed-y.txt", "w")
+    if len(x) == 19:
+        for i in range(len(x)):
+            reexpressed[i] = Decimal(math.sqrt(y[i]))
+            f.write(str(reexpressed[i]) + "\n")
+
+        reex = rf.read("Re-expressed-y.txt")
+        linearregression(x, reex)
+        #createlineplot(x, rf.read("Re-expressed-y.txt"), xlabel, "Square Root of " + ylabel, title)
+    if len(x) == 50:
+        for i in range(len(x)):
+            reexpressed[i] = Decimal(round(math.log(y[i], 10), 3))
+            f.write(str(reexpressed[i]) + "\n")
+        linearregression(x, rf.read("Re-expressed-y.txt"))
+        #createlineplot(x, rf.read("Re-expressed-y.txt"), xlabel, "Log of " + ylabel, title)
 
 
 def samplestandarddeviation(data):
