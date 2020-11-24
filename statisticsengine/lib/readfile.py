@@ -4,7 +4,7 @@ from decimal import Decimal
 import statisticsengine.data
 
 
-def read(filename):
+def read(filename: str) -> list:
     data = []
 
     f = pkg_resources.read_text(statisticsengine.data, filename).splitlines()
@@ -15,7 +15,7 @@ def read(filename):
     return data
 
 
-def verifile(x, y):
+def verifile(x: list, y: list):
     if len(x) != len(y):
         print("Dataset lengths mismatch.\n Exiting program...")
         quit()

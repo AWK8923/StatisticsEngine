@@ -9,16 +9,19 @@ import seaborn
 from statisticsengine.lib import readfile
 
 
-def bcalc(n, sumx, sumy, m):
-    return (sumy - (m * sumx)) / n
+def bcalc(n: Decimal, sumx: Decimal, sumy: Decimal, m: Decimal) -> Decimal:
+    return Decimal((sumy - (m * sumx)) / n)
 
 
-def createboxplot(data):
+def createboxplot(data: list):
     seaborn.boxplot(x=data, width=.25)
     plt.show()
 
 
-def createlineplot(x, y, xlabel, ylabel, title):
+def createlineplot(x: list, y: list, xlabel: str,
+                   ylabel: str, title: str) -> None:
+    readfile.verifile(x, y)
+
     for i in range(len(x)):
         x[i] = float(x[i])
         y[i] = float(y[i])
@@ -36,7 +39,7 @@ def createlineplot(x, y, xlabel, ylabel, title):
     plt.show()
 
 
-def firstquartile(data):
+def firstquartile(data: list):
     if len(data) % 2 != 0:
         h1 = []
         for i in range(round(len(data) / 2) + 1):
@@ -46,11 +49,11 @@ def firstquartile(data):
         return data[int(len(data) / 4)]
 
 
-def interquartilerange(data):
-    return thirdquartile(data) - firstquartile(data)
+def interquartilerange(data: list) -> Decimal:
+    return Decimal(thirdquartile(data) - firstquartile(data))
 
 
-def linearregression(x, y):
+def linearregression(x: list, y: list) -> None:
     n = len(x)
     sumx = sum(x)
     sumy = sum(y)
@@ -67,27 +70,28 @@ def linearregression(x, y):
     b = Decimal(bcalc(n, sumx, sumy, m))
     r = Decimal(rcalcxy(x, y))
 
-    print("\nEquation: %sx + %s\nr= %s\nr^2 = %s" % (m, b, r, pow(r, 2)))
+    print("\nEquation: %sx + %s\nr= %s\nr^2 = %s" % (m, b, r, r ** 2))
 
 
-def mcalc(n, sumx, sumy, sumxy, sumx2):
-    return ((n * sumxy) - (sumx * sumy)) / ((n * sumx2) - (pow(sumx, 2)))
+def mcalc(n: Decimal, sumx: Decimal, sumy: Decimal,
+          sumxy: Decimal, sumx2: Decimal) -> Decimal:
+    return Decimal(((n * sumxy) - (sumx * sumy)) / ((n * sumx2) - (sumx ** 2)))
 
 
-def mean(data):
-    return sum(data) / len(data)
+def mean(data: list) -> Decimal:
+    return Decimal(sum(data) / len(data))
 
 
-def median(data):
+def median(data: list) -> Decimal:
     if len(data) % 2 != 0:
-        return data[int(round(len(data) / 2))]
+        return Decimal(data[int(round(len(data) / 2))])
     else:
         n1 = data[int((len(data) / 2) - 1)]
         n2 = data[int(len(data) / 2)]
-        return n1 + ((n2 - n1) / 2)
+        return Decimal(n1 + ((n2 - n1) / 2))
 
 
-def onevariablestatistics(data):
+def onevariablestatistics(data: list) -> None:
     print("Mean = %.5f\n"
           "Summation = %.5f\n"
           "Summation Squared = %.5f\n"
@@ -106,19 +110,20 @@ def onevariablestatistics(data):
              thirdquartile(data), max(data), interquartilerange(data)))
 
 
-def populationstandarddeviation(data):
-    return pow(populationvariance(data), .5)
+def populationstandarddeviation(data: list) -> Decimal:
+    return Decimal(math.sqrt(populationvariance(data)))
 
 
-def populationvariance(data):
-    return sumofsquareddifferences(data) / len(data)
+def populationvariance(data: list) -> Decimal:
+    return Decimal(sumofsquareddifferences(data) / len(data))
 
 
-def rcalc(n, sumx, sumy, sumxy, sumx2, sumy2):
-    return ((n * sumxy) - (sumx * sumy)) / (Decimal((math.sqrt((n * sumx2) - (sumx ** 2))) * (math.sqrt((n * sumy2) - (sumy ** 2)))))
+def rcalc(n: Decimal, sumx: Decimal, sumy: Decimal,
+          sumxy: Decimal, sumx2: Decimal, sumy2: Decimal) -> Decimal:
+    return Decimal(((n * sumxy) - (sumx * sumy)) / (Decimal((math.sqrt((n * sumx2) - (sumx ** 2))) * (math.sqrt((n * sumy2) - (sumy ** 2))))))
 
 
-def rcalcxy(x, y):
+def rcalcxy(x: list, y: list) -> Decimal:
     n = len(x)
     sumx = Decimal(sum(x))
     sumy = Decimal(sum(y))
@@ -134,16 +139,14 @@ def rcalcxy(x, y):
     return rcalc(n, sumx, sumy, sumxy, sumx2, sumy2)
 
 
-def reexpress(x, y, xlabel, ylabel, title):
+def reexpress(x: list, y: list, xlabel: str, ylabel: str, title: str) -> None:
     reexpressed = {}
     f = open("Re-expressed-y.txt", "w")
     if len(x) == 19:
         for i in range(len(x)):
             reexpressed[i] = Decimal(math.sqrt(y[i]))
-            f.write(str(reexpressed[i]) + "\n")
 
-        reex = readfile.read("Re-expressed-y.txt")
-        linearregression(x, reex)
+        linearregression(x, reexpressed.values())
         # createlineplot(x, rf.read("Re-expressed-y.txt"), xlabel, "Square Root of " + ylabel, title)
     if len(x) == 50:
         for i in range(len(x)):
@@ -153,29 +156,29 @@ def reexpress(x, y, xlabel, ylabel, title):
         # createlineplot(x, rf.read("Re-expressed-y.txt"), xlabel, "Log of " + ylabel, title)
 
 
-def samplestandarddeviation(data):
-    return pow(samplevariance(data), .5)
+def samplestandarddeviation(data: list) -> Decimal:
+    return Decimal(math.sqrt(samplevariance(data)))
 
 
-def samplevariance(data):
-    return sumofsquareddifferences(data) / (len(data) - 1)
+def samplevariance(data: list) -> Decimal:
+    return Decimal(sumofsquareddifferences(data) / (len(data) - 1))
 
 
-def sumofsquareddifferences(data):
+def sumofsquareddifferences(data: list) -> Decimal:
     ssd = 0
     m = mean(data)
 
     for i in data:
-        ssd += pow((i - m), 2)
+        ssd += (i - m) ** 2
 
-    return ssd
+    return Decimal(ssd)
 
 
-def thirdquartile(data):
+def thirdquartile(data: list) -> Decimal:
     if len(data) % 2 != 0:
         h1 = []
         for i in range(round(len(data) / 2) + 1, len(data)):
             h1.append(i)
         return median(h1)
     else:
-        return data[int(len(data) / 4) * 3]
+        return Decimal(data[int(len(data) / 4) * 3])
