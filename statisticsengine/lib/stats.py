@@ -10,6 +10,7 @@ from statisticsengine.lib import readfile
 
 
 def bcalc(n: Decimal, sumx: Decimal, sumy: Decimal, m: Decimal) -> Decimal:
+    # Math: \frac{\sum y-m(\sum x)}{n}
     return Decimal((sumy - (m * sumx)) / n)
 
 
@@ -75,6 +76,7 @@ def linearregression(x: list, y: list) -> None:
 
 def mcalc(n: Decimal, sumx: Decimal, sumy: Decimal,
           sumxy: Decimal, sumx2: Decimal) -> Decimal:
+    # Math: \frac{n(\sum xy)-(\sum x)(\sum y)}{n(\sum x^{2})-(\sum x)^{2}}
     return Decimal(((n * sumxy) - (sumx * sumy)) / ((n * sumx2) - (sumx ** 2)))
 
 
@@ -120,6 +122,7 @@ def populationvariance(data: list) -> Decimal:
 
 def rcalc(n: Decimal, sumx: Decimal, sumy: Decimal,
           sumxy: Decimal, sumx2: Decimal, sumy2: Decimal) -> Decimal:
+    # Math: \frac{n(\sum xy)-(\sum x)(\sum y)}{\sqrt{n(\sum x^{2})-(\sum x)^{2}}*\sqrt{n(\sum y^{2})-(\sum y)^{2}}}
     return Decimal(((n * sumxy) - (sumx * sumy)) / (Decimal((math.sqrt((n * sumx2) - (sumx ** 2))) * (math.sqrt((n * sumy2) - (sumy ** 2))))))
 
 
