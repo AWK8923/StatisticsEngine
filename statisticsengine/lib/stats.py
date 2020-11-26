@@ -144,19 +144,17 @@ def rcalcxy(x: list, y: list) -> Decimal:
 
 def reexpress(x: list, y: list, xlabel: str, ylabel: str, title: str) -> None:
     reexpressed = [None] * len(x)
-    f = open("Re-expressed-y.txt", "w")
     if len(x) == 19:
         for i in range(len(x)):
             reexpressed[i] = Decimal(math.sqrt(y[i]))
 
         linearregression(x, reexpressed)
-        createlineplot(x, reexpressed, xlabel, "Square Root of " + ylabel, title)
+        createlineplot(x, reexpressed, xlabel, "Square Root of " + ylabel, "Reexpressed" + title)
     if len(x) == 50:
         for i in range(len(x)):
             reexpressed[i] = Decimal(round(math.log(y[i], 10), 3))
-            f.write(str(reexpressed[i]) + "\n")
         linearregression(x, reexpressed)
-        createlineplot(x, reexpressed, xlabel, "Log of " + ylabel, title)
+        createlineplot(x, reexpressed, xlabel, "Log of " + ylabel, "Reexpressed" + title)
 
 
 def samplestandarddeviation(data: list) -> Decimal:
